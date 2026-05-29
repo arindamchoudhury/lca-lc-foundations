@@ -14,9 +14,9 @@ This repository is the companion to the course located [HERE](https://academy.la
 
 - The [Chrome](https://www.google.com/chrome/) browser is recommended
 - [git](https://git-scm.com/install/) is recommended
-- A package/project manager: [uv](https://docs.astral.sh/uv/) (recommended) or [pip](https://pypi.org/project/pip/)
+- A package/project manager: [uv](https://docs.astral.sh/uv/) (recommended), [pip](https://pypi.org/project/pip/), or [conda](https://docs.conda.io/)
 - note: `uv` is also required in Module 2, Lesson 1 to run the MCP server with `uvx`
-- The course requires Python >=3.12, <3.14  If you use `uv`, it will take care of this for you. [More info](#python-virtual-environments)
+- The course requires Python >=3.12, <3.14. **Python 3.13 is recommended** — Python 3.14 is not yet supported. If you use `uv`, it will take care of this for you. [More info](#python-virtual-environments)
 
 ### Installation
 
@@ -82,6 +82,43 @@ pip install -r requirements.txt
 
 </details>
 
+<details>
+<summary>Using conda</summary>
+
+```bash
+conda env create -f environment.yml
+conda activate lc-foundations
+```
+
+To update an existing conda environment:
+```bash
+conda env update -f environment.yml --prune
+```
+
+</details>
+
+### Dependency Versions (updated May 2026)
+
+<details>
+<summary>View version changes</summary>
+
+| Package | Previous | Current |
+|---|---|---|
+| `langchain` | >=1.1.3 | >=1.3.2 |
+| `langchain-core` | >=1.3.3 | >=1.4.0 |
+| `langchain-openai` | >=1.1.1 | >=1.2.2 |
+| `langchain-anthropic` | >=1.0.3 | >=1.4.4 |
+| `langchain-google-genai` | >=3.1.0 | >=4.2.4 |
+| `langchain-tavily` | >=0.2.13 | >=0.2.18 |
+| `langchain-community` | >=0.4.1 | >=0.4.2 |
+| `langchain-text-splitters` | >=1.0.0 | >=1.1.2 |
+| `langchain-mcp-adapters` | >=0.1.13 | >=0.2.2 |
+| `langgraph` | >=1.0.3 | >=1.2.2 |
+| `langgraph-cli` | >=0.4.9 | >=0.4.27 |
+| `langsmith` | >=0.8.5 | >=0.8.6 |
+
+</details>
+
 ### Setup Verification
 
 After completing the Setup section, we recommend you run the following command to verify your environment.
@@ -119,10 +156,11 @@ uv run jupyter lab
 </details>
 
 <details>
-<summary>Using pip</summary>
+<summary>Using pip or conda</summary>
 
 ```bash
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate      # pip: On Windows: .venv\Scripts\activate
+conda activate lc-foundations  # conda
 jupyter lab
 ```
 
@@ -233,11 +271,12 @@ Note: LangSmith is optional for evaluation and tracing. The course works without
 <details>
 <summary>Wrong Python Version</summary>
 
-If you see a warning about Python version not satisfying requirements, you need Python >=3.12 and <3.14.
+If you see a warning about Python version not satisfying requirements, you need Python >=3.12 and <3.14. **Python 3.14 is not yet supported** — use Python 3.13.
 
 **Solution:**
 - If using `uv`: Run `uv sync` which will automatically install the correct Python version
-- If using pip: Install Python 3.12 or 3.13 using [pyenv](#python-virtual-environments) or from [python.org](https://www.python.org/downloads/)
+- If using pip: Install Python 3.13 using [pyenv](#python-virtual-environments) or from [python.org](https://www.python.org/downloads/)
+- If using conda: The `environment.yml` pins to Python 3.13 automatically
 
 </details>
 
@@ -268,7 +307,7 @@ pip install -r requirements.txt
 
 ### Model Providers
 
-If you don't have an OpenAI API key, you can sign up [here](https://openai.com/index/openai-api/). The course primarily uses gpt-5-nano which is very inexpensive.  If desired, you may also obtain additional API keys for [Anthropic](https://console.anthropic.com) or [Google](https://ai.google.dev/gemini-api/docs/quickstart).
+If you don't have an OpenAI API key, you can sign up [here](https://openai.com/index/openai-api/). The course primarily uses `gpt-5-nano` which is very inexpensive. A newer drop-in replacement, `gpt-5.4-nano` (released March 2026), is also available — swap the model name in `init_chat_model()` if desired.  If desired, you may also obtain additional API keys for [Anthropic](https://console.anthropic.com) or [Google](https://ai.google.dev/gemini-api/docs/quickstart).
 
 This course has been created using particular models and model providers.  You can use other providers, but you will need to update the API keys in the .env file and make some necessary code changes. LangChain supports many chat model providers. [More Info](https://docs.langchain.com/oss/python/integrations/providers/all_providers).
 
