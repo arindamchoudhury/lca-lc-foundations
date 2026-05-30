@@ -313,6 +313,33 @@ This course has been created using particular models and model providers.  You c
 
 Tavily is a search provider that returns search results in an LLM-friendly way. They have a generous free tier. [Tavily](https://tavily.com)
 
+If you prefer not to sign up for Tavily, you can use `DuckDuckGoSearchRun` instead — no API key required:
+
+```python
+from langchain_community.tools import DuckDuckGoSearchRun
+search = DuckDuckGoSearchRun()
+```
+
+#### Using DeepSeek (cheaper alternative to OpenAI)
+
+[DeepSeek](https://platform.deepseek.com) offers an OpenAI-compatible API at roughly 10-35x lower cost. Add your key to `.env`:
+
+```env
+DEEPSEEK_API_KEY = 'your_key_here'
+```
+
+Then use it in notebooks via the OpenAI integration:
+
+```python
+from langchain_openai import ChatOpenAI
+
+model = ChatOpenAI(
+    model="deepseek-chat",
+    api_key=os.environ["DEEPSEEK_API_KEY"],
+    base_url="https://api.deepseek.com/v1"
+)
+```
+
 #### Running Locally with Ollama (no API keys required)
 
 All notebooks can be run using free local models via [Ollama](https://ollama.com), with no API keys needed.
@@ -354,6 +381,40 @@ structured_model = model.with_structured_output(MySchema, method="json_mode")
 ```
 
 **Note:** No changes to `.env` are needed when using Ollama. The Ollama server runs locally at `http://localhost:11434` and requires no API key.
+
+**5. Keep the model warm (avoid slow cold starts)**
+
+The first invocation takes 60–100s while the model loads into VRAM. By default Ollama unloads the model after 5 minutes of inactivity. To keep it resident for your session, pass `keep_alive` to `ChatOllama`:
+
+```python
+model = ChatOllama(model="qwen3.5:4b", keep_alive="1h")   # keep loaded for 1 hour
+# model = ChatOllama(model="qwen3.5:4b", keep_alive=-1)   # keep until Ollama restarts
+```
+
+To change the server-wide default, set the environment variable before starting Ollama:
+
+```powershell
+# Windows — persist for your user, then restart Ollama from the system tray
+[System.Environment]::SetEnvironmentVariable("OLLAMA_KEEP_ALIVE", "1h", "User")
+```
+
+**6. Reduce VRAM usage (optional)**
+
+The default context length is 16 384 tokens, which reserves ~1.6 GB of VRAM for the KV cache. Lower it if you are tight on memory:
+
+```python
+model = ChatOllama(model="qwen3.5:4b", num_ctx=4096)
+```
+
+**7. Monitor Ollama logs (Windows):**
+
+```powershell
+Get-Content "$env:LOCALAPPDATA\Ollama\server.log" -Wait -Tail 20
+```
+
+Key lines to look for:
+- `offloaded X/Y layers to GPU` — confirms GPU is being used
+- `eval rate: XX tokens/s` — generation speed (expect 25-40 t/s for `qwen3.5:4b`)
 
 ### Getting Started with LangSmith
 
