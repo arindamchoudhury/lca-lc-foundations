@@ -313,6 +313,48 @@ This course has been created using particular models and model providers.  You c
 
 Tavily is a search provider that returns search results in an LLM-friendly way. They have a generous free tier. [Tavily](https://tavily.com)
 
+#### Running Locally with Ollama (no API keys required)
+
+All notebooks can be run using free local models via [Ollama](https://ollama.com), with no API keys needed.
+
+**1. Install Ollama** — download from [ollama.com](https://ollama.com) and install.
+
+**2. Pull a model:**
+
+```bash
+# Recommended for this course (RTX 3060 6GB or similar)
+ollama pull qwen3.5:4b
+
+# For multimodal notebooks (Module 1, Lesson 4)
+ollama pull llava
+```
+
+| Model | VRAM | Best for |
+|---|---|---|
+| `qwen3.5:4b` (recommended) | ~3.5GB | All text-based notebooks — fast and capable |
+| `qwen3.5:9b` | ~6GB | Better reasoning; tight on 6GB cards |
+| `llava` | ~4GB | Multimodal (image) notebooks |
+
+**3. Replace model initialisation in notebooks:**
+
+```python
+# Instead of:
+from langchain.chat_models import init_chat_model
+model = init_chat_model(model="gpt-5-nano")
+
+# Use:
+from langchain_ollama import ChatOllama
+model = ChatOllama(model="qwen3.5:4b")
+```
+
+**4. Structured output** — pass `method="json_mode"` explicitly:
+
+```python
+structured_model = model.with_structured_output(MySchema, method="json_mode")
+```
+
+**Note:** No changes to `.env` are needed when using Ollama. The Ollama server runs locally at `http://localhost:11434` and requires no API key.
+
 ### Getting Started with LangSmith
 
 - Create a [LangSmith](https://smith.langchain.com/) account
