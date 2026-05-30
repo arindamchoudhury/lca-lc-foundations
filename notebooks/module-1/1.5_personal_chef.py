@@ -5,6 +5,9 @@ load_dotenv()
 from langchain.tools import tool
 from typing import Dict, Any
 from tavily import TavilyClient
+from langchain_deepseek import ChatDeepSeek
+
+model = ChatDeepSeek(model="deepseek-chat")
 
 tavily_client = TavilyClient()
 
@@ -28,7 +31,7 @@ Return recipe suggestions and eventually the recipe instructions to the user, if
 from langchain.agents import create_agent
 
 agent = create_agent(
-    model="gpt-5-nano",
+    model=model,
     tools=[web_search],
     system_prompt=system_prompt
 )
